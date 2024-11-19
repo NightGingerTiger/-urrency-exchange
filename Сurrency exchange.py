@@ -4,26 +4,28 @@ from tkinter import messagebox as mb
 import requests
 
 def update_currency_label(event):
-    code = combobox.get()
+    code = target_combobox.get()
     name = currencies[code]
     currency_label.config(text=name)
 
 def exchange():
-    code = combobox.get()
+    target_code = target_combobox.get()
+    base_code = base_combobox.get()
 
-    if code:
+    if target_code and base_code:
         try:
-            response = requests.get('https://open.er-api.com/v6/latest/USD')
+            response = requests.get(f'https://open.er-api.com/v6/latest/{base_code}')
             response.raise_for_status()
 
             data = response.json()
 
-            if code in data['rates']:
-                exchange_rate = data['rates'][code]
-                currency_name = currencies[code]
-                mb.showinfo("Курс обмена", f"Курс к доллару: {exchange_rate:.2f} {currency_name} за 1 доллар")
+            if target_code in data['rates']:
+                exchange_rate = data['rates'][target_code]
+                target_name = currencies[target_code]
+                base_name = currencies[base_code]
+                mb.showinfo("Курс обмена", f"Курс к доллару: {exchange_rate:.2f} {target_name} за 1 {base_name}")
             else:
-                mb.showerror("Ошибка", f"Валюта {code} не найдена")
+                mb.showerror("Ошибка", f"Валюта {target_code} не найдена")
         except Exception as e:
             mb.showerror("Ошибка", f"Ошибка: {e}")
     else:
@@ -39,22 +41,28 @@ currencies = {
     "CNY": "Китайский юань",
     "RUB": "Российский рубль",
     "KZT": "Казахстанский тенге",
-    "UZS": "Узбекский сум"
+    "UZS": "Узбекский сум",
+    "USD": "Американский доллар"
 }
 
 window = Tk()
 window.title("Курс обмена валюты к доллару")
-window.geometry("360x180")
+window.geometry("360x300")
 
-Label(text="Выберите код валюты:").pack(padx=10, pady=10)
+Label(text="Выберите код базовой валюты:").pack(padx=10, pady=10)
 
-combobox = ttk.Combobox(values=list(currencies.keys()))
-combobox.pack(padx=10, pady=10)
-combobox.bind("<<ComboboxSelected>>", update_currency_label)
+base_combobox = ttk.Combobox(values=list(currencies.keys()))
+base_combobox.pack(padx=10, pady=10)
+
+Label(text="Выберите код целевой валюты:").pack(padx=10, pady=10)
+
+target_combobox = ttk.Combobox(values=list(currencies.keys()))
+target_combobox.pack(padx=10, pady=10)
+target_combobox.bind("<<ComboboxSelected>>", update_currency_label)
 
 currency_label = ttk.Label()
 currency_label.pack(padx=10, pady=10)
 
-Button(text="Получить курс обмена к доллару", command=exchange).pack(padx=10, pady=10)
+Button(text="Получить курс обмена валют", command=exchange).pack(padx=10, pady=10)
 
 window.mainloop()
