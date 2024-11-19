@@ -43,8 +43,8 @@ def exchange():
                     target_name = currencies[target_code]
                     base_name = currencies[base_code]
                     base_name2 = currencies[base_code2]
-                    mb.showinfo("Курс обмена", f"Курс {exchange_rate:.2f} {target_name} за 1 {base_name}\n"
-                                               f"Курс {exchange_rate2:.2f} {target_name} за 1 {base_name2}")
+                    mb.showinfo("Курс обмена", f"Курс {exchange_rate:.3f} {target_name} за 1 {base_name}\n"
+                                               f"Курс {exchange_rate2:.3f} {target_name} за 1 {base_name2}")
                 else:
                     mb.showerror("Ошибка", f"Валюта {target_code} не найдена")
             except Exception as e:
