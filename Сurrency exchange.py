@@ -3,10 +3,17 @@ from tkinter import ttk
 from tkinter import messagebox as mb
 import requests
 
-def update_currency_label(event):
+
+def update_target_label(event):
     code = target_combobox.get()
     name = currencies[code]
-    currency_label.config(text=name)
+    target_label.config(text=name)
+
+def update_base_label(event):
+    code = base_combobox.get()
+    name = currencies[code]
+    base_label.config(text=name)
+
 
 def exchange():
     target_code = target_combobox.get()
@@ -53,15 +60,19 @@ Label(text="Выберите код базовой валюты:").pack(padx=10,
 
 base_combobox = ttk.Combobox(values=list(currencies.keys()))
 base_combobox.pack(padx=10, pady=10)
+base_combobox.bind("<<ComboboxSelected>>", update_base_label)
+
+base_label = ttk.Label()
+base_label.pack(padx=10, pady=10)
 
 Label(text="Выберите код целевой валюты:").pack(padx=10, pady=10)
 
 target_combobox = ttk.Combobox(values=list(currencies.keys()))
 target_combobox.pack(padx=10, pady=10)
-target_combobox.bind("<<ComboboxSelected>>", update_currency_label)
+target_combobox.bind("<<ComboboxSelected>>", update_target_label)
 
-currency_label = ttk.Label()
-currency_label.pack(padx=10, pady=10)
+target_label = ttk.Label()
+target_label.pack(padx=10, pady=10)
 
 Button(text="Получить курс обмена валют", command=exchange).pack(padx=10, pady=10)
 
